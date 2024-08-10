@@ -54,4 +54,11 @@ public class UserService {
                 .filter(user -> user.getProfession().equalsIgnoreCase(profession))
                 .collect(Collectors.toList());
     }
+
+    public List<String> getAllProfessions() {
+        return users.stream()
+                .map(User::getProfession)
+                .distinct()
+                .collect(Collectors.toList());
+    }
 }

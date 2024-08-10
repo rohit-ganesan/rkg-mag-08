@@ -29,5 +29,10 @@ public class UserController {
     public List<User> getUsersByProfession(@RequestParam String profession) {
         return userService.getUsersByProfession(profession);
     }
+
+    @GetMapping("/all-professions")
+    public List<String> getAllProfessions() {
+        return userService.getAllProfessions();
+    }
 }
 
