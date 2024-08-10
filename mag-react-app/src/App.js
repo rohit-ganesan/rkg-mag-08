@@ -116,7 +116,7 @@ const handleSearchUserByProfession = async (event) => {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>User Information</h1>
+        <h2>User Information ({filteredUsers.length}) </h2>
       </header>
 
       {/* Button to Show Add User Form */}
