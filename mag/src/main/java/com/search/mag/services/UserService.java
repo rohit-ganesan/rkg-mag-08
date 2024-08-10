@@ -61,4 +61,9 @@ public class UserService {
                 .distinct()
                 .collect(Collectors.toList());
     }
+
+    public List<User> getAllUsers() {
+        return users;
+    }
+
 }
