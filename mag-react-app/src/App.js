@@ -1,49 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { 
+  handleSearchById, 
+  handleGetAllUsers, 
+  handleGetAllProfessions 
+} from './Services';
 
 function App() {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [id, setId] = useState('');
   const [professions, setProfessions] = useState([]);
 
   useEffect(() => {
-    // Fetch all users on initial load
-    fetch('http://127.0.0.1:8080/api/users', {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
+    const fetchData = async () => {
+      const allUsers = await handleGetAllUsers();
+      if (allUsers) {
+          setUsers(allUsers);
+          setFilteredUsers(allUsers);
       }
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    }).then((data) => {
-      setUsers(data);
-      setFilteredUsers(data); // Initially show all users
-    }).catch((err) => {
-      console.error("Fetch error:", err);
-    });
 
-    // Fetch list of professions for the dropdown
-    fetch('http://127.0.0.1:8080/api/users/all-professions', {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
+      const professions = await handleGetAllProfessions();
+      if (professions) {
+          setProfessions(professions);
       }
-    }).then((response) => response.json())
-      .then((data) => setProfessions(data))
-      .catch((err) => {
-        console.error("Fetch error:", err);
-      });
+  };
+  fetchData();
   }, []);
+
+  const handleSearchUserById = async () => {
+    if (id) {
+        const user = await handleSearchById(id);
+        if (user) {
+            setFilteredUsers([user]);
+        } else {
+            setFilteredUsers([]);
+        }
+    } else {
+        setFilteredUsers(users);
+    }
+};
 
   return (
     <div className="App">
       <header className="App-header">
         <h3>User Information</h3>
       </header>
-
+      <div className="search-container">
+        <div className="search-field">
+          <label htmlFor="id">Search by ID:</label>
+          <input
+            type="text"
+            id="id"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+            onBlur={handleSearchUserById}
+          />
+        </div>
+      </div>
       <table className="users-table">
         <thead>
           <tr>
