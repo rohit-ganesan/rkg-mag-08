@@ -58,4 +58,11 @@ public class UserController {
         return ResponseEntity.ok(professions);  // 200 OK with the list of professions
     }
 
+    @PostMapping
+    public ResponseEntity<User> addUser(@RequestBody User newUser) {
+        User addedUser = userService.addUser(newUser);
+        return ResponseEntity.status(201).body(addedUser);
+    }
+
+
 }

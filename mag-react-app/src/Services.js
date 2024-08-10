@@ -75,11 +75,28 @@ const handleGetAllProfessions = async () => {
     }
 };
 
+const handleAddUser = async (user) => {
+    try {
+        const resp = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        });
+        return await resp.json();
+    } catch(err) {
+        console.error("Fetch error:", err);
+        return null;
+    }
+};
+
 
   module.exports = {
     handleGetAllUsers: handleGetAllUsers,
     handleGetAllProfessions: handleGetAllProfessions,
     handleSearchById: handleSearchById,
     handleSearchByDateRange: handleSearchByDateRange,
-    handleSearchByProfession: handleSearchByProfession
+    handleSearchByProfession: handleSearchByProfession,
+    handleAddUser: handleAddUser
   }

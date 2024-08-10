@@ -5,33 +5,75 @@ import {
   handleGetAllUsers, 
   handleGetAllProfessions,
   handleSearchByProfession,
-  handleSearchByDateRange
+  handleSearchByDateRange,
+  handleAddUser
 } from './Services';
 
 function App() {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [id, setId] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [profession, setProfession] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
+  const [createdDate, setCreatedDate] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [profession, setProfession] = useState('');
   const [professions, setProfessions] = useState([]);
+  const [showAddUserForm, setShowAddUserForm] = useState(false); // State to toggle the form
 
   useEffect(() => {
     const fetchData = async () => {
-      const allUsers = await handleGetAllUsers();
-      if (allUsers) {
-          setUsers(allUsers);
-          setFilteredUsers(allUsers);
-      }
+        const allUsers = await handleGetAllUsers();
+        if (allUsers) {
+            setUsers(allUsers);
+            setFilteredUsers(allUsers);
+        }
 
-      const professions = await handleGetAllProfessions();
-      if (professions) {
-          setProfessions(professions);
-      }
-  };
-  fetchData();
+        const professions = await handleGetAllProfessions();
+        if (professions) {
+            setProfessions(professions);
+        }
+    };
+
+    fetchData();
   }, []);
+
+  const handleAddNewUser = async () => {
+    const newUser = {
+      id,
+      firstName,
+      lastName,
+      email,
+      profession,
+      country,
+      city,
+      createdDate
+    };
+
+    const addedUser = await handleAddUser(newUser);
+    if (addedUser) {
+        const allUsers = await handleGetAllUsers();
+        setUsers(allUsers);
+        setFilteredUsers(allUsers);
+        clearFormFields(); // Clear the form fields after adding
+        setShowAddUserForm(false); // Hide the form after adding the user
+    }
+  };
+
+  const clearFormFields = () => {
+    setId('');
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setProfession('');
+    setCountry('');
+    setCity('');
+    setCreatedDate('');
+  };
 
   const handleSearchUserById = async () => {
     if (id) {
@@ -44,7 +86,7 @@ function App() {
     } else {
         setFilteredUsers(users);
     }
-};
+  };
 
 const handleSearchUserByDateRange = async () => {
   if (startDate && endDate) {
@@ -53,8 +95,8 @@ const handleSearchUserByDateRange = async () => {
           setFilteredUsers(usersInRange);
       }
   } else if (!startDate && !endDate) {
-    setFilteredUsers(users);
-}
+    setFilteredUsers(users); // Reset to original users if both dates are cleared
+  }
 };
 
 const handleSearchUserByProfession = async (event) => {
@@ -74,14 +116,107 @@ const handleSearchUserByProfession = async (event) => {
   return (
     <div className="App">
       <header className="App-header">
-        <h3>User Information</h3>
+        <h1>User Information</h1>
       </header>
+
+      {/* Button to Show Add User Form */}
+      <button className="toggle-form-button" onClick={() => setShowAddUserForm(!showAddUserForm)}>
+        {showAddUserForm ? "Close Add User Form" : "Add New User"}
+      </button>
+
+      {/* Add New User Form */}
+      {showAddUserForm && (
+        <div className="add-user-form">
+          <h2>Add New User</h2>
+          <div className="form-field">
+            <label htmlFor="id">ID:</label>
+            <input
+              type="text"
+              id="id"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="firstName">First Name:</label>
+            <input
+              type="text"
+              id="firstName"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="lastName">Last Name:</label>
+            <input
+              type="text"
+              id="lastName"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="profession">Profession:</label>
+            <select
+              id="profession"
+              value={profession}
+              onChange={(e) => setProfession(e.target.value)}
+            >
+              <option value="">Select Profession</option>
+              {professions.map((prof) => (
+                <option key={prof} value={prof}>
+                  {prof}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-field">
+            <label htmlFor="country">Country:</label>
+            <input
+              type="text"
+              id="country"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="city">City:</label>
+            <input
+              type="text"
+              id="city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="createdDate">Created Date:</label>
+            <input
+              type="date"
+              id="createdDate"
+              value={createdDate}
+              onChange={(e) => setCreatedDate(e.target.value)}
+            />
+          </div>
+          <button className="toggle-form-button" onClick={handleAddNewUser}>Add User</button>
+        </div>
+      )}
+
+      {/* Search functionality */}
       <div className="search-container">
         <div className="search-field">
           <label htmlFor="id">Search by ID:</label>
           <input
             type="text"
-            id="id"
+            id="searchId"
             value={id}
             onChange={(e) => setId(e.target.value)}
             onBlur={handleSearchUserById}
@@ -106,9 +241,9 @@ const handleSearchUserByProfession = async (event) => {
           />
         </div>
         <div className="search-field">
-          <label htmlFor="profession">Search by Profession:</label>
+          <label htmlFor="searchProfession">Search by Profession:</label>
           <select
-            id="profession"
+            id="searchProfession"
             value={profession}
             onChange={handleSearchUserByProfession}
           >
@@ -121,6 +256,8 @@ const handleSearchUserByProfession = async (event) => {
           </select>
         </div>
       </div>
+
+      {/* Display users */}
       <table className="users-table">
         <thead>
           <tr>
@@ -155,7 +292,6 @@ const handleSearchUserByProfession = async (event) => {
           )}
         </tbody>
       </table>
-
     </div>
   );
 }

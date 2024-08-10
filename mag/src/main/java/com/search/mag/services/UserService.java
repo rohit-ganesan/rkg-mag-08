@@ -66,4 +66,9 @@ public class UserService {
         return users;
     }
 
+    public User addUser(User newUser) {
+        users.add(newUser);
+        return newUser;
+    }
+
 }
