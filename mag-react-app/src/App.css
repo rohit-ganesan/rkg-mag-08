@@ -41,6 +41,10 @@
   width: 200px;
 }
 
+.search-field input[type="date"] {
+  width: 180px;
+}
+
 .users-table {
   margin: 0 auto;
   border-collapse: collapse;

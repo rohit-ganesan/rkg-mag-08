@@ -3,13 +3,18 @@ import './App.css';
 import { 
   handleSearchById, 
   handleGetAllUsers, 
-  handleGetAllProfessions 
+  handleGetAllProfessions,
+  handleSearchByProfession,
+  handleSearchByDateRange
 } from './Services';
 
 function App() {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [id, setId] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [profession, setProfession] = useState('');
   const [professions, setProfessions] = useState([]);
 
   useEffect(() => {
@@ -41,6 +46,31 @@ function App() {
     }
 };
 
+const handleSearchUserByDateRange = async () => {
+  if (startDate && endDate) {
+      const usersInRange = await handleSearchByDateRange(startDate, endDate);
+      if (usersInRange) {
+          setFilteredUsers(usersInRange);
+      }
+  } else if (!startDate && !endDate) {
+    setFilteredUsers(users);
+}
+};
+
+const handleSearchUserByProfession = async (event) => {
+  const selectedProfession = event.target.value;
+  setProfession(selectedProfession);
+
+  if (selectedProfession) {
+      const usersByProfession = await handleSearchByProfession(selectedProfession);
+      if (usersByProfession) {
+          setFilteredUsers(usersByProfession);
+      }
+  } else {
+      setFilteredUsers(users);
+  }
+};
+
   return (
     <div className="App">
       <header className="App-header">
@@ -56,6 +86,39 @@ function App() {
             onChange={(e) => setId(e.target.value)}
             onBlur={handleSearchUserById}
           />
+        </div>
+        <div className="search-field">
+          <label htmlFor="startDate">Start Date:</label>
+          <input
+            type="date"
+            id="startDate"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            onBlur={handleSearchUserByDateRange}
+          />
+          <label htmlFor="endDate">End Date:</label>
+          <input
+            type="date"
+            id="endDate"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            onBlur={handleSearchUserByDateRange}
+          />
+        </div>
+        <div className="search-field">
+          <label htmlFor="profession">Search by Profession:</label>
+          <select
+            id="profession"
+            value={profession}
+            onChange={handleSearchUserByProfession}
+          >
+            <option value="">All Professions</option>
+            {professions.map((prof) => (
+              <option key={prof} value={prof}>
+                {prof}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
       <table className="users-table">
