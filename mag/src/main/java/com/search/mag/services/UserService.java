@@ -32,7 +32,7 @@ public class UserService {
             users = csvToBean.parse();
             log.info("Loaded {} users", users.size());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 
