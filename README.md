@@ -97,7 +97,7 @@ Description: Retrieves a list of users created within the specified date range.
 ### 4. Get Users by Profession
 URL: 
 ```
-/api/users/profession
+/api/users/profession?profession=${profession}
 ```
 Method: **GET**
 
