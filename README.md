@@ -82,7 +82,7 @@ Description: Retrieves a user by their ID.
 ### 3. Get Users by Date Range
 URL: 
 ```
-/api/users/date-range
+/api/users/date-range?startDate=${startDate}&endDate=${endDate}
 ```
 Method: **GET**
 
