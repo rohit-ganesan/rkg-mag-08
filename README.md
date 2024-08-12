@@ -16,7 +16,7 @@ This project contains two main components:
 
 Make sure you have the following installed:
 
-- **Java 11 or higher** (for Spring Boot)
+- **Java 19 or higher** (for Spring Boot)
 - **Maven** (for building the Spring Boot application)
 - **Node.js and npm** (for running the React application)
 
